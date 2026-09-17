@@ -1,6 +1,11 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-azurelinux3.0 AS base
+# Runtime base image, overridable to build the image variants:
+#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled
+#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0-azurelinux3.0-distroless
+ARG BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0
+
+FROM ${BASE_IMAGE} AS base
 WORKDIR /app
 ARG TARGETARCH
 
@@ -27,6 +32,6 @@ ADD --chmod=755 https://github.com/krallin/tini/releases/download/v0.19.0/tini-s
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENV LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
-USER armonikuser
+USER $APP_UID
 
 ENTRYPOINT ["/tini", "-s", "-vv", "--", "dotnet", "ArmoniK.DevelopmentKit.Worker.DLLWorker.dll"]
