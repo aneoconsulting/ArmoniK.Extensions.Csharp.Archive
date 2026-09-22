@@ -2,6 +2,7 @@
 
 # Runtime base image, overridable to build the image variants:
 #   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled
+#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled-extra
 #   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0-azurelinux3.0-distroless
 ARG BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0
 
