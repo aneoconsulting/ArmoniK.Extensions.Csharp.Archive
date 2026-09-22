@@ -101,6 +101,8 @@ jobs:
             base: mcr.microsoft.com/dotnet/aspnet:8.0
           - suffix: "-jammy-chiseled"
             base: mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled
+          - suffix: "-jammy-chiseled-extra"
+            base: mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled-extra
           - suffix: "-azurelinux3.0-distroless"
             base: mcr.microsoft.com/dotnet/aspnet:8.0-azurelinux3.0-distroless
     name: "Build image ${{ matrix.base }}"
