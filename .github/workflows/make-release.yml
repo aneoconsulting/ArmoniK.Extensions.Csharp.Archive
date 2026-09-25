@@ -140,6 +140,8 @@ jobs:
           linux/arm64
           linux/amd64
         push: true
+        sbom: true
+        provenance: mode=max
         tags: |
             dockerhubaneo/armonik_worker_dll:${{ github.ref_name }}${{ matrix.suffix }}
             dockerhubaneo/armonik_worker_dll:latest${{ matrix.suffix }}
