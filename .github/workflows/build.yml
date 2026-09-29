@@ -112,7 +112,7 @@ jobs:
       run: echo ${{ steps.buildx.outputs.platforms }}
 
     - name: Build and push
-      run: docker buildx build --progress=plain --platform=linux/amd64,linux/arm64 --push=true --build-arg BASE_IMAGE=${{ matrix.base }} -t dockerhubaneo/armonik_worker_dll:${VERSION}${{ matrix.suffix }} -f Worker/src/DLLWorker/Dockerfile ./
+      run: docker buildx build --progress=plain --platform=linux/amd64,linux/arm64 --push=true --sbom=true --provenance=mode=max --build-arg BASE_IMAGE=${{ matrix.base }} -t dockerhubaneo/armonik_worker_dll:${VERSION}${{ matrix.suffix }} -f Worker/src/DLLWorker/Dockerfile ./
  
   testEndToEnd:
     needs:
