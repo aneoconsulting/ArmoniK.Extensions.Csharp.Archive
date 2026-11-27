@@ -76,8 +76,8 @@ jobs:
       uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
       with:
         dotnet-version: |
-          6.x
           8.x
+          10.x
 
     - name: Build the package
       run: |
@@ -98,13 +98,13 @@ jobs:
       matrix:
         include:
           - suffix: ""
-            base: mcr.microsoft.com/dotnet/aspnet:8.0
-          - suffix: "-jammy-chiseled"
-            base: mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled
-          - suffix: "-jammy-chiseled-extra"
-            base: mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled-extra
+            base: mcr.microsoft.com/dotnet/aspnet:10.0
+          - suffix: "-noble-chiseled"
+            base: mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled
+          - suffix: "-noble-chiseled-extra"
+            base: mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra
           - suffix: "-azurelinux3.0-distroless"
-            base: mcr.microsoft.com/dotnet/aspnet:8.0-azurelinux3.0-distroless
+            base: mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux3.0-distroless
     name: "Build image ${{ matrix.base }}"
     steps:
     - name: Checkout

@@ -55,8 +55,8 @@ jobs:
       uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
       with:
         dotnet-version: |
-          6.x
           8.x
+          10.x
 
     - name: Build the package
       run: |
@@ -79,13 +79,13 @@ jobs:
       matrix:
         include:
           - suffix: ""
-            base: mcr.microsoft.com/dotnet/aspnet:8.0
-          - suffix: "-jammy-chiseled"
-            base: mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled
-          - suffix: "-jammy-chiseled-extra"
-            base: mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled-extra
+            base: mcr.microsoft.com/dotnet/aspnet:10.0
+          - suffix: "-noble-chiseled"
+            base: mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled
+          - suffix: "-noble-chiseled-extra"
+            base: mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra
           - suffix: "-azurelinux3.0-distroless"
-            base: mcr.microsoft.com/dotnet/aspnet:8.0-azurelinux3.0-distroless
+            base: mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux3.0-distroless
     name: "Build image ${{ matrix.base }}"
     env:
       VERSION: ${{ needs.versionning.outputs.version }}
@@ -145,8 +145,8 @@ jobs:
         uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
           dotnet-version: |
-            6.x
             8.x
+            10.x
 
       - name: Install Dependencies
         uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
@@ -210,7 +210,7 @@ jobs:
          if [ "${{ matrix.mtls }}" = "true" ]; then
           export Grpc__ClientP12="${{ steps.deploy.outputs.generated-folder }}/certificates/ingress/client.submitter.p12"
          fi
-         dotnet test --runtime linux-x64 -f net6.0 --logger "trx;LogFileName=test-results.trx"
+         dotnet test --runtime linux-x64 -f net8.0 --logger "trx;LogFileName=test-results.trx"
          
       - name: Test Report
         uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3 # v2
@@ -259,8 +259,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suffix: ["", "-jammy-chiseled", "-jammy-chiseled-extra", "-azurelinux3.0-distroless"]
-    name: "Container test ${{ matrix.suffix }}"
+        suffix: ["", "-noble-chiseled", "-noble-chiseled-extra", "-azurelinux3.0-distroless"]
+        # guests built for an older framework than the worker run on the worker's runtime
+        framework: ["net8.0", "net10.0"]
+    name: "Container test ${{ matrix.suffix }} ${{ matrix.framework }}"
     env:
       VERSION: ${{ needs.versionning.outputs.version }}
     steps:
@@ -273,8 +275,8 @@ jobs:
         uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
           dotnet-version: |
-            6.x
             8.x
+            10.x
 
       - name: Install Dependencies
         uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
@@ -292,7 +294,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker buildx build --tag test_image:latest --platform=linux/amd64 --build-arg WORKER_DLL_IMAGE=dockerhubaneo/armonik_worker_dll:$VERSION${{ matrix.suffix }} -f Tests/ArmoniK.EndToEndTests/ArmoniK.EndToEndTests.Worker/Dockerfile --load .
+          docker buildx build --tag test_image:latest --platform=linux/amd64 --build-arg WORKER_DLL_IMAGE=dockerhubaneo/armonik_worker_dll:$VERSION${{ matrix.suffix }} --build-arg FRAMEWORK=${{ matrix.framework }} -f Tests/ArmoniK.EndToEndTests/ArmoniK.EndToEndTests.Worker/Dockerfile --load .
           docker save "test_image:latest" | sudo k3s ctr images import /dev/stdin
 
       - id: deploy
@@ -306,13 +308,13 @@ jobs:
           override-worker-image: test_image
           override-worker-partition: default
           shared-data-folder: ${{ env.ARMONIK_SHARED_HOST_PATH }}
-          log-suffix: container${{ matrix.suffix }}
+          log-suffix: container${{ matrix.suffix }}-${{ matrix.framework }}
 
       - name: Run Test
         timeout-minutes: 20
         run: |
           cd Tests
-          bash -x ./endToEndTests.sh -f ${{ steps.deploy.outputs.generated-folder }}/armonik-output.json
+          FRAMEWORK=${{ matrix.framework }} bash -x ./endToEndTests.sh -f ${{ steps.deploy.outputs.generated-folder }}/armonik-output.json
 
   canMerge:
     needs: 
