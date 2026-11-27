@@ -15,6 +15,9 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -22,8 +25,20 @@ namespace ArmoniK.DevelopmentKit.Worker.DLLWorker;
 
 internal class AddOnAssemblyLoadContext : AssemblyLoadContext
 {
+  /// <summary>
+  ///   Simple names of the assemblies the host resolves for the default context: the worker's own dependencies and,
+  ///   when the worker is framework-dependent, the shared frameworks. A guest must use these instead of its own copies,
+  ///   so that the types it exchanges with the worker (IConfiguration, ILoggerFactory, the worker interfaces) are the same.
+  /// </summary>
+  private static readonly HashSet<string> SharedAssemblies = (AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") as string ?? string.Empty).Split(Path.PathSeparator,
+                                                                                                                                                 StringSplitOptions
+                                                                                                                                                   .RemoveEmptyEntries)
+                                                                                                                                          .Select(Path
+                                                                                                                                                    .GetFileNameWithoutExtension)
+                                                                                                                                          .ToHashSet(StringComparer
+                                                                                                                                                       .OrdinalIgnoreCase);
+
   private readonly AssemblyDependencyResolver resolver_;
-  private readonly AssemblyDependencyResolver rootResolver_;
 
   public AddOnAssemblyLoadContext()
     : base(Guid.NewGuid()
@@ -36,16 +51,11 @@ internal class AddOnAssemblyLoadContext : AssemblyLoadContext
     : base(Guid.NewGuid()
                .ToString(),
            true)
-  {
-    rootResolver_ = new AssemblyDependencyResolver(Assembly.GetExecutingAssembly()
-                                                           .Location);
-
-    resolver_ = new AssemblyDependencyResolver(mainAssemblyToLoadPath);
-  }
+    => resolver_ = new AssemblyDependencyResolver(mainAssemblyToLoadPath);
 
   protected override Assembly Load(AssemblyName name)
   {
-    if (rootResolver_.ResolveAssemblyToPath(name) != null)
+    if (name.Name is not null && SharedAssemblies.Contains(name.Name))
     {
       return null;
     }
