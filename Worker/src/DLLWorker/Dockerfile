@@ -6,14 +6,14 @@
 #   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux3.0-distroless
 #   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-resolute-chiseled-extra
 #   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux4.0-distroless-extra
-ARG BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0
+ARG BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:11.0
 
 FROM ${BASE_IMAGE} AS base
 WORKDIR /app
 ARG TARGETARCH
 
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:11.0 AS build
 WORKDIR /src
 COPY ["Worker/src/DLLWorker/ArmoniK.DevelopmentKit.Worker.DLLWorker.csproj", "Worker/src/DLLWorker/"]
 COPY ["Common/src/Common/ArmoniK.DevelopmentKit.Common.csproj", "Common/src/Common/"]
