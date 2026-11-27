@@ -24,7 +24,7 @@ ARG BUILD_CONFIG=Release
 RUN dotnet build "ArmoniK.DevelopmentKit.Worker.DLLWorker.csproj" -c "${BUILD_CONFIG}" -f net8.0 -o /app/build
 
 FROM build AS publish
-RUN dotnet publish -a "${TARGETARCH}" "ArmoniK.DevelopmentKit.Worker.DLLWorker.csproj" -c "${BUILD_CONFIG}" -f net8.0 -o /app/publish --self-contained true
+RUN dotnet publish -a "${TARGETARCH}" "ArmoniK.DevelopmentKit.Worker.DLLWorker.csproj" -c "${BUILD_CONFIG}" -f net8.0 -o /app/publish
 
 FROM base AS final
 
