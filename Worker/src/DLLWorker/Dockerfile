@@ -4,6 +4,8 @@
 #   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled
 #   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra
 #   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux3.0-distroless
+#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-resolute-chiseled-extra
+#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux4.0-distroless-extra
 ARG BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0
 
 FROM ${BASE_IMAGE} AS base
