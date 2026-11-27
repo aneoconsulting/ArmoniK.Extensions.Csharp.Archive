@@ -1,17 +1,17 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 # Runtime base image, overridable to build the image variants:
-#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled
-#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled-extra
-#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0-azurelinux3.0-distroless
-ARG BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:8.0
+#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled
+#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra
+#   --build-arg BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux3.0-distroless
+ARG BASE_IMAGE=mcr.microsoft.com/dotnet/aspnet:10.0
 
 FROM ${BASE_IMAGE} AS base
 WORKDIR /app
 ARG TARGETARCH
 
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY ["Worker/src/DLLWorker/ArmoniK.DevelopmentKit.Worker.DLLWorker.csproj", "Worker/src/DLLWorker/"]
 COPY ["Common/src/Common/ArmoniK.DevelopmentKit.Common.csproj", "Common/src/Common/"]
@@ -21,10 +21,10 @@ RUN dotnet restore -a "${TARGETARCH}" "Worker/src/DLLWorker/ArmoniK.DevelopmentK
 COPY . .
 WORKDIR "/src/Worker/src/DLLWorker"
 ARG BUILD_CONFIG=Release
-RUN dotnet build "ArmoniK.DevelopmentKit.Worker.DLLWorker.csproj" -c "${BUILD_CONFIG}" -f net8.0 -o /app/build
+RUN dotnet build "ArmoniK.DevelopmentKit.Worker.DLLWorker.csproj" -c "${BUILD_CONFIG}" -f net10.0 -o /app/build
 
 FROM build AS publish
-RUN dotnet publish -a "${TARGETARCH}" "ArmoniK.DevelopmentKit.Worker.DLLWorker.csproj" -c "${BUILD_CONFIG}" -f net8.0 -o /app/publish
+RUN dotnet publish -a "${TARGETARCH}" "ArmoniK.DevelopmentKit.Worker.DLLWorker.csproj" -c "${BUILD_CONFIG}" -f net10.0 -o /app/publish
 
 FROM base AS final
 

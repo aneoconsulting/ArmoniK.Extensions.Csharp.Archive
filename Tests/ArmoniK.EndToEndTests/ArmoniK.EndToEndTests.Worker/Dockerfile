@@ -1,13 +1,14 @@
 ARG WORKER_DLL_IMAGE=dockerhubaneo/armonik_worker_dll:0.18.0
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+ARG FRAMEWORK=net8.0
 WORKDIR /src
 COPY . .
 
 
 WORKDIR "/src/Tests/ArmoniK.EndToEndTests/ArmoniK.EndToEndTests.Worker"
 
-RUN dotnet publish -a "${TARGETARCH}" --self-contained -c Release -f net8.0 .
+RUN dotnet publish -a "${TARGETARCH}" --self-contained -c Release -f "${FRAMEWORK}" .
 
 
 FROM ${WORKER_DLL_IMAGE} AS final

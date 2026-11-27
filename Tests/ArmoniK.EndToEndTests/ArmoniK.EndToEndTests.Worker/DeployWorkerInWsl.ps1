@@ -30,7 +30,7 @@ if (Test-Path $zipPath) {
 
 # Trigger compilation of the worker
 Write-Host "Build and publish worker"
-dotnet publish --self-contained -c Release -r linux-x64 -f net6.0 .
+dotnet publish --self-contained -c Release -r linux-x64 -f net8.0 .
 
 # Find the destination folder (should contain path /ArmoniK/infrastructure/quick-deploy/localhost/data)
 $deployment = $(wsl kubectl -n armonik get deployments/compute-plane-default -o json) | ConvertFrom-Json
