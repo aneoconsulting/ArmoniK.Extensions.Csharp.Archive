@@ -86,6 +86,10 @@ jobs:
             base: mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra
           - suffix: "-azurelinux3.0-distroless"
             base: mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux3.0-distroless
+          - suffix: "-resolute-chiseled-extra"
+            base: mcr.microsoft.com/dotnet/aspnet:10.0-resolute-chiseled-extra
+          - suffix: "-azurelinux4.0-distroless-extra"
+            base: mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux4.0-distroless-extra
     name: "Build image ${{ matrix.base }}"
     env:
       VERSION: ${{ needs.versionning.outputs.version }}
@@ -259,7 +263,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        suffix: ["", "-noble-chiseled", "-noble-chiseled-extra", "-azurelinux3.0-distroless"]
+        suffix: ["", "-noble-chiseled", "-noble-chiseled-extra", "-azurelinux3.0-distroless", "-resolute-chiseled-extra", "-azurelinux4.0-distroless-extra"]
         # guests built for an older framework than the worker run on the worker's runtime
         framework: ["net8.0", "net10.0"]
     name: "Container test ${{ matrix.suffix }} ${{ matrix.framework }}"

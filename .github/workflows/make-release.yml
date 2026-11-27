@@ -105,6 +105,10 @@ jobs:
             base: mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra
           - suffix: "-azurelinux3.0-distroless"
             base: mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux3.0-distroless
+          - suffix: "-resolute-chiseled-extra"
+            base: mcr.microsoft.com/dotnet/aspnet:10.0-resolute-chiseled-extra
+          - suffix: "-azurelinux4.0-distroless-extra"
+            base: mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux4.0-distroless-extra
     name: "Build image ${{ matrix.base }}"
     steps:
     - name: Checkout
