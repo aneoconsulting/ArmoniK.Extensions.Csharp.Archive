@@ -1,4 +1,4 @@
-ARG WORKER_DLL_IMAGE=dockerhubaneo/armonik_worker_dll:0.18.0
+ARG WORKER_DLL_IMAGE=dockerhubaneo/armonik_worker_dll:0.19.9
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG FRAMEWORK=net8.0
